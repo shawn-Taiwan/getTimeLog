@@ -33,8 +33,7 @@ def byteify(input, encoding='utf-8'):
 history = byteify(history)
 history['logItemList'] = sorted(history['logItemList'], key=lambda k: k['startTime'])
 for hisLog in history['logItemList'] :
-  if 'LabProject' == hisLog['activityTypeName']:
-    j = 0
+  if 'LabProject' == hisLog['activityTypeName']: #you can changed the type you want to out put at here
     dateString = hisLog['startTime']
     dateString2 = hisLog['endTime']
     dateFormatter = "%Y/%m/%d %H:%M"
