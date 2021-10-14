@@ -1,11 +1,10 @@
 # getTimeLog
 
 ## pip install
-1. pip install requests
-2. pip install openpyxl
+ - pip install -r requirements.txt
 
 ## Find your userID
 1. Click "ADD LOG" button
-2. Open f12 to Network sub-tab
+2. Open F12 to Network sub-tab
 3. Create a log
-4. you can find your userID at "record" API "Hearders" sub-tab at "Request Payload"
+4. You can find your userID at "record" API "Hearders" sub-tab at "Request Payload"
