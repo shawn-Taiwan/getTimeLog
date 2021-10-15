@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import ttk, simpledialog
 from tkcalendar import Calendar
+from datetime import date
+import os
 
 class CalendarDialog(simpledialog.Dialog):
     """Dialog box that displays a calendar and returns the selected date"""
@@ -10,49 +12,91 @@ class CalendarDialog(simpledialog.Dialog):
 
     def apply(self):
         self.result = self.calendar.selection_get()
+class UI():
+    def __init__(self, getXlsx):
+        self.getXlsx = getXlsx
+        self.startDate = str(date.today().strftime("%Y/%m/%d"))
+        self.endDate = str(date.today().strftime("%Y/%m/%d"))
 
-def UI(func):
-    root = tk.Tk()
-    root.title('timelog to xlsx')
-    root.geometry('500x100')
+        self.studentIDs = []
+        self.userIDs = []
+        self.readFile()
 
-    def openStartDateCalendar():
-        global startDate
-        cd = CalendarDialog(root)
-        startDate = cd.result
+        self.root = tk.Tk()
+        self.root.title('timelog LabProject -> xlsx')
+        self.root.geometry('500x70')
 
-    def openEndDateCalendar():
-        global endDate
-        cd = CalendarDialog(root)
-        endDate = cd.result
+        studentIDlabel = tk.Label(self.root, text = "studentID")
+        studentIDlabel.grid(column=0, row=0, sticky=tk.W)
 
-    def submit():
-        func(studentIDString.get(), userIDString.get(), str(startDate).replace('-', '/'), str(endDate).replace('-', '/'))
+        self.studentIDString = tk.StringVar()
+        # self.studentIDString.set("")    # You can decomment this line to input your student ID by default
+        self.studentIDCombobox = ttk.Combobox(self.root, width=35, text=self.studentIDString)
+        self.studentIDCombobox['values'] = self.studentIDs
+        self.studentIDCombobox.bind("<<ComboboxSelected>>", self.fillUserID)
+        self.studentIDCombobox.grid(column=1, row=0, padx=10)
 
-    studentIDlabel = tk.Label(root, text = "studentID")
-    studentIDlabel.grid(column=0, row=0, sticky=tk.W)
+        userIDlabel = tk.Label(self.root, text = "userID")
+        userIDlabel.grid(column=0, row=1, sticky=tk.W)
 
-    global studentIDString
-    studentIDString = tk.StringVar()
-    # studentIDString.set("")    # You can decomment this to input your student ID by default 
-    studentIDentry = tk.Entry(root, width=40, textvariable=studentIDString)
-    studentIDentry.grid(column=1, row=0, padx=10)
+        self.userIDString = tk.StringVar()
+        # self.userIDString.set("")    # You can decomment this line to input your user ID by default
+        self.userIDentry = tk.Entry(self.root, width=40, textvariable=self.userIDString)
+        self.userIDentry.grid(column=1, row=1, padx=10)
 
-    userIDlabel = tk.Label(root, text = "userID")
-    userIDlabel.grid(column=0, row=1, sticky=tk.W)
+        self.startButtonText = tk.StringVar()
+        self.endButtonText = tk.StringVar()
+        self.updateStartButtonText()
+        self.updateEndButtonText()
 
-    global userIDString
-    userIDString = tk.StringVar()
-    # userIDString.set("")    # You can decomment this to input your user ID by default
-    userIDentry = tk.Entry(root, width=40, textvariable=userIDString)
-    userIDentry.grid(column=1, row=1, padx=10)
+        self.startButton = tk.Button(self.root, textvariable=self.startButtonText, command=self.openStartDateCalendar)
+        self.endButton = tk.Button(self.root, textvariable=self.endButtonText, command=self.openEndDateCalendar)
+        self.submitButton = tk.Button(self.root, text="Submit", command=self.submit)
 
-    startButton = tk.Button(root, text="Start date calendar", command=openStartDateCalendar)
-    endButton = tk.Button(root, text="End date calendar", command=openEndDateCalendar)
-    submitButton = tk.Button(root, text="Submit", command=submit)
+        self.startButton.grid(column=0, row=2, padx=0)
+        self.endButton.grid(column=1, row=2, padx=0)
+        self.submitButton.grid(column=2, row=2, padx=0)
 
-    startButton.grid(column=0, row=2, padx=0)
-    endButton.grid(column=1, row=2, padx=0)
-    submitButton.grid(column=2, row=2, padx=0)
+        self.root.mainloop()
 
-    root.mainloop()
+    def readFile(self):
+        script_dir = os.path.dirname(__file__)
+        rel_path = "record.txt"
+        abs_file_path = os.path.join(script_dir, rel_path)
+        print(abs_file_path)
+
+        try:
+            file = open(abs_file_path)
+            lines = file.readlines()
+            for index in range(0, len(lines), 2):
+                self.studentIDs.append(lines[index].replace('\n', ''))
+                self.userIDs.append(lines[index+1].replace('\n', ''))
+            file.close()
+            print('testStudents: ', self.studentIDs)
+            print('testUserIDs: ', self.userIDs)
+        except:
+            print('record.txt is missing...')
+
+    def fillUserID(self, event):
+        index = self.studentIDs.index(self.studentIDString.get())
+        self.userIDString.set(self.userIDs[index])
+
+    def updateStartButtonText(self):
+        self.startButtonText.set("Start date: " + self.startDate)
+
+    def updateEndButtonText(self):
+        self.endButtonText.set("End date: " + self.endDate)
+
+    def openStartDateCalendar(self):
+        calendarDialog = CalendarDialog(self.root)
+        self.startDate = calendarDialog.result.strftime("%Y/%m/%d")
+        self.updateStartButtonText()
+
+    def openEndDateCalendar(self):
+        calendarDialog = CalendarDialog(self.root)
+        self.endDate = calendarDialog.result.strftime("%Y/%m/%d")
+        self.updateEndButtonText()
+
+    def submit(self):
+        if(self.studentIDString.get() != '' and self.userIDString.get() != ''):
+            self.getXlsx(self.studentIDString.get(), self.userIDString.get(), self.startDate, self.endDate)
