@@ -1,10 +1,12 @@
 # getTimeLog
 
-## pip install
+**`need to use Python3`**
+## Setup
  - pip install -r requirements.txt
 
-## Find your userID
-1. Click "ADD LOG" button
-2. Open F12 to Network sub-tab
-3. Create a log
-4. You can find your userID at "record" API "Hearders" sub-tab at "Request Payload"
+## How to find userID
+1. Open F12 to `Network` sub-tab
+2. Refresh page
+3. `login` API -> `Hearders` sub-tab -> `Request Payload`
+
+You can add student ID and user ID set in `record.txt`.

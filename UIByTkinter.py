@@ -30,7 +30,7 @@ class UI():
         studentIDlabel.grid(column=0, row=0, sticky=tk.W)
 
         self.studentIDString = tk.StringVar()
-        # self.studentIDString.set("")    # You can decomment this line to input your student ID by default
+        self.studentIDString.set(self.studentIDs[0])
         self.studentIDCombobox = ttk.Combobox(self.root, width=35, text=self.studentIDString)
         self.studentIDCombobox['values'] = self.studentIDs
         self.studentIDCombobox.bind("<<ComboboxSelected>>", self.fillUserID)
@@ -40,7 +40,7 @@ class UI():
         userIDlabel.grid(column=0, row=1, sticky=tk.W)
 
         self.userIDString = tk.StringVar()
-        # self.userIDString.set("")    # You can decomment this line to input your user ID by default
+        self.userIDString.set(self.userIDs[0])
         self.userIDentry = tk.Entry(self.root, width=40, textvariable=self.userIDString)
         self.userIDentry.grid(column=1, row=1, padx=10)
 
@@ -60,20 +60,16 @@ class UI():
         self.root.mainloop()
 
     def readFile(self):
-        script_dir = os.path.dirname(__file__)
-        rel_path = "record.txt"
-        abs_file_path = os.path.join(script_dir, rel_path)
-        print(abs_file_path)
+        fileName = "record.txt"
+        filePath = os.path.join(os.path.dirname(__file__), fileName)
 
         try:
-            file = open(abs_file_path)
+            file = open(filePath)
             lines = file.readlines()
             for index in range(0, len(lines), 2):
                 self.studentIDs.append(lines[index].replace('\n', ''))
                 self.userIDs.append(lines[index+1].replace('\n', ''))
             file.close()
-            print('testStudents: ', self.studentIDs)
-            print('testUserIDs: ', self.userIDs)
         except:
             print('record.txt is missing...')
 
