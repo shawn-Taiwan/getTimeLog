@@ -9,4 +9,4 @@
 2. Refresh page
 3. `login` API -> `Hearders` sub-tab -> `Request Payload`
 
-You can add student ID and user ID set in `record.txt`.
+You can add file name and user ID set in `record.txt`.
