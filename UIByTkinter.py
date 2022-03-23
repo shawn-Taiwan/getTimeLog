@@ -101,7 +101,7 @@ class UI():
             self.getXlsx(fileName, self.userIDs[index], self.startDate, self.endDate)
 
     def submit(self):
-        if self.selectAllValue:
+        if self.selectAllValue.get():
             self.submitAll()
         elif(self.fileNameString.get() != '' and self.userIDString.get() != ''):
             self.getXlsx(self.fileNameString.get(), self.userIDString.get(), self.startDate, self.endDate)

@@ -17,7 +17,7 @@ def getXlsx(studentID, userID, startDate, endDate):
     sheet.title = studentID
     row = [['Date', 'StartTime', 'EndTime', 'Hours', 'Type', 'Title']]
 
-    timelogHistory = 'https://ssl-timelog.csie.ntut.edu.tw/api/log/history'
+    timelogHistory = 'http://140.124.181.95:30200/api/log/history'
 
     payload = {'endDate': endDate,'startDate': startDate,'userID': userID}
     getHistory = requests.post(timelogHistory, data=json.dumps(payload), headers={"Content-Type":"application/json"})
